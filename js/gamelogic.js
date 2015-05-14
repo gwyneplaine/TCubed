@@ -1,6 +1,73 @@
 $(document).ready(function(){
+	var miniMax= {
+		// First check if the game is over 
+		// If it is, return the score from the current players perspective. 
+			
+		// If the game is not over, iterate over all the possible moves available to the current player 
+		// and push them into an array. 
+
+		// If the move creates an end state, add a positive score to the scores array. 
+		// If the move doesn't create an end state, 
+		// iterate over all the remaining possible moves 
+		// available to the current player
+
+		// Keep doing this until there are no more possible moves. 
+
+		// Return all choices that result in a positive number.
+				boardState: {
+					rowA:[],
+					rowB:[],
+					rowC:[],
+				},
+				gridState:[],
+				min: function(){
+
+				},
+				max: function(){
+					//Find all possible moves on the Board. 
+
+				},
+				findPossibleMoves: function(){
+					var pMoves = [];
+					$('.grid').each(function(){
+
+						pMoves.push
+					});
+					
+				},
+				boardStates: function(){
+					var board = [];
+					$('.grid').each(function(){
+						
+						if($(this).hasClass('A')){
+							console.log("has playerA");
+							board.push("O");
+						} else if($(this).hasClass('B')){
+							console.log("has playerB");
+							board.push('X');
+						} else{
+							console.log("has no player");
+							board.push('_');
+						}
+					});
+					gridState = board;
+					for(var i = 0; i < 3; i++){
+						this.boardState.rowA.push(board[i])
+					}
+					for(var i = 3; i< 6; i++){
+						this.boardState.rowB.push(board[i])
+					}
+					for(var i = 6; i<8;i++){
+						this.boardState.rowC.push(board[i])
+					}
+					console.log(gridState);
+				},
+
+
+		};	
 	var tictactoe = {
-		counter: 2,
+		moveCounter: 2,
+		gridArray: [],
 		gridSize: 9,
 		message:"",
 		playerAcount:0,
@@ -16,58 +83,64 @@ $(document).ready(function(){
 			}
 			$('.grid').each(function(){			
 				counterG++;
-				$(this).attr('id',"g" + counterG);	
+				$(this).attr('id',"g" + counterG);
+				tictactoe.gridArray.push(this);	
 			})
 		},
-		miniMax: function(gameState){
-			/* 
-				First check if the game is over 
-				If it is, return the score from the current players perspective. 
-					
-				If the game is not over, iterate over all the possible moves available to the current player 
-				and push them into an array. 
+		gameState: function(){
+		},
 
-				If the move creates an end state, add a positive score to the scores array. 
-				If the move doesn't create an end state, 
-				iterate over all the remaining possible moves 
-				available to the current player
+		checkMove: function(){
+			var $grids= $('#tcubed').find('.grid');
+			$grids.each(function(){
 
-				Keep doing this until there are no more possible moves. 
-
-				Return all choices that result in a positive number. 
-			*/
+			});
 		},
 		computer: function(){
-			if(this.checkWin()){
-				return this.score;
-			} else {
-				//generate all possible game states 
-			}
+			var $grids= $('#tcubed').find('.grid');
+			var availableTiles = [];
+			var move;
+			$grids.each(function(){
+				if(!$(this).hasClass('occupied')){
+					availableTiles.push(this);
+					console.log(availableTiles);
+				}
+			});
+			move = availableTiles[Math.floor(Math.random()*availableTiles.length)];
+			console.log(move);
+			$move = "#" + move.id;
+			$($move).addClass('B');
+			$($move).addClass("occupied");
+			$($move).data('gridValue',4);
+			tictactoe.counter++;
+			tictactoe.makeMove('playerA');
 		},
 		playerA: function (){
 			$('#tcubed').one('click','.grid',function(){
 				if($(this).hasClass('occupied')){
 					tictactoe.makeMove("playerA");
 				} else {
-					$(this).addClass('A');
-					$(this).addClass("occupied");
-					$(this).data('gridValue', 3);
-					tictactoe.counter++;
+					$(this).addClass('A').addClass("occupied").data('gridValue', 3);
+					tictactoe.moveCounter++;
 					tictactoe.makeMove("playerB");
 					
 				}
 			});
 		},
-
+		refreshGrid: function(){
+			var newGameState =[];
+			$('.grid').each(function(){
+				newGameState.push(this);
+			});
+			tictactoe.gridArray = newGameState;
+		},
 		playerB: function (){
 			$('#tcubed').one('click','.grid',function(){
 				if($(this).hasClass('occupied')){
 					tictactoe.makeMove('playerA');
 				}else{
-					$(this).addClass("B");
-					$(this).addClass("occupied");
-					$(this).data('gridValue', 4);
-					tictactoe.counter++;
+					$(this).addClass("B").addClass("occupied").data('gridValue', 4);
+					tictactoe.moveCounter++;
 					tictactoe.makeMove("playerA");
 				}
 			});			
@@ -76,11 +149,13 @@ $(document).ready(function(){
 		makeMove: function (str){
 			this.checkWin();
 			if(!tictactoe.checkWin()){
+				this.refreshGrid();
+				console.log(this.gridArray);
 				console.log("switch");
 				tictactoe.switchTurn();
 			}else{
 				console.log("endgame");
-	;			$('body').append('<div class="message-container"></div>');
+				$('body').append('<div class="message-container"></div>');
 				$('.message-container').append("<div class='message-box'></div>");
 				$('.message-box').append('<p class="message"></p><button class="resetbutt">Play another</button>');
 				$('.message').text(this.message);
@@ -90,60 +165,72 @@ $(document).ready(function(){
 				return;
 			}
 		},
-
-		resetBoard: function resetBoard(){
-			$('body').empty();
-			tictactoe.playGame();
+		checkTurn: function(){
+			if(this.moveCounter % 2 === 0){
+				return true;
+			}
+			else{
+				return false;
+			}
 		},
-		switchTurn: function switchTurn(){
+
+		switchTurn: function (){
 			console.log("did this once");
-			if(tictactoe.counter % 2 === 0){
+			if(this.checkTurn()){
+				console.log(this.checkTurn());
 				tictactoe.playerA();
 			} else {
+
 				tictactoe.playerB();
 			}	
 		},
 
+		resetBoard: function (){
+			$('body').empty();
+			tictactoe.playGame();
+		},
+
+
 		checkWin: function (){
 			var	playerAwin = "player A has won";
 			var	playerBwin = "player B has won";
-			if($('.occupied').length === 9){
-				this.message = "No more squares, stalemate";
-				gameEnd = true;
-				return gameEnd;
-			}
-			else{
-				var rowA = parseInt($("#g1").data('gridValue')) + parseInt($("#g2").data('gridValue'));
-			
+			if(gameEnd !== true){
+				var $grid;
+				var $gridValue;
+				var diagACheck = 0;
+				var diagBCheck = 0;
 				//ROWCHECK
-				for(var i=1; i<=7; i+=3){
+				for(var i=0; i<7; i+=3){
 					var check = 0;
 					var gameEnd = false;
-					for(var j=i; j<=i+2; j++){
-						check += parseInt($('#g'+j).data('gridValue'));
+					for(var j=i; j<i+3; j++){
+						$grid = tictactoe.gridArray[j].id;
+						$gridValue = $("#" + $grid).data('gridValue');
+						check += parseInt($gridValue);
 						if(check == 9 || check == 12){
 							console.log("Game is over");
-
-							if(check == 9){this.message = playerBwin; this.playerAcount++}
-							else{this.message = playerAwin; this.playerBcount++}
-							
+							if(check == 9){
+								this.message = playerBwin; this.playerAcount++
+							}
+							else{
+								this.message = playerAwin; this.playerBcount++
+							}
 							gameEnd = true;
 							return gameEnd;
-
 						} else{
 							gameEnd = false;
 						}
 					}
 				}	
-			
 
-				// //COLUMN CHECK
-				for(var i=1; i<=3; i++){
+				//COLUMN CHECK
+				for(var i=0; i<3; i++){
 					var check = 0;
 					for(var j=i; j<=i+6; j+=3){
-						check += parseInt($('#g'+j).data('gridValue'));
+						$grid = tictactoe.gridArray[j].id;
+						$gridValue = $("#" + $grid).data('gridValue');
+						check += parseInt($gridValue);
 						if(check == 9 || check == 12){
-							console.log("Game is over");
 							gameEnd = true;
 							if(check == 9){ 
 								this.message = playerAwin; 
@@ -153,7 +240,6 @@ $(document).ready(function(){
 								this.message = playerBwin;
 								this.playerBcount++;
 							}
-							console.log(gameEnd);
 							return gameEnd;
 						} else {
 							gameEnd = false;
@@ -162,18 +248,38 @@ $(document).ready(function(){
 				}
 
 				//DIAG CHECK
-				var diaga = parseInt($('#g1').data('gridValue')) + parseInt($('#g5').data('gridValue')) + parseInt($('#g9').data('gridValue'));
-				var diagb = parseInt($('#g3').data('gridValue')) + parseInt($('#g5').data('gridValue')) + parseInt($('#g7').data('gridValue'));
-				if(diaga == 9 || diaga == 12 || diagb == 9 || diagb == 12){
+				for(var i = 0; i<=this.gridArray.length; i+=4){
+					$grid =  this.gridArray[i].id;
+					$gridValue = $('#'+$grid).data('gridValue');
+					diagACheck  += parseInt($gridValue);
+				}
+
+				for(var i = 2; i<=this.gridArray.length-2; i+=2){
+					$grid = this.gridArray[i].id;
+					$gridValue = $('#'+$grid).data('gridValue');
+					diagBCheck += parseInt($gridValue);
+
+				}
+
+				if(diagACheck === 9 || diagBCheck === 9 || diagACheck === 12 || diagBCheck === 12){
 					gameEnd = true;
-					if(diaga == 9 || diagb == 9){this.message=playerAwin; this.playerAcount++;} 
-					else {this.message=playerBwin; this.playerBcount++;}
+					if(diagACheck === 9 || diagBCheck === 9){
+						this.message=playerAwin; this.playerAcount++;
+					} 
+					else {
+						this.message=playerBwin; this.playerBcount++;
+					}
 					return gameEnd;
-					console.log("Game is over");
-				} else {
+				}else if($('.occupied').length === 9){
+					this.message = "No more squares, stalemate";
+					gameEnd = true;
+					return gameEnd;
+				} 
+				else{
 					gameEnd = false;
 				}
-			}
+			}			
+
 			return gameEnd;
 		},
 
@@ -183,4 +289,5 @@ $(document).ready(function(){
 		}
 	}
 	tictactoe.playGame();
+	miniMax.boardStates();
 });
