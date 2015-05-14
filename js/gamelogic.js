@@ -8,7 +8,7 @@ $(document).ready(function(){
 		tictactoe.playGame("computer");
 	});
 	var miniMax= {
-		// First check if the game is over 
+		// Check if the game is over 
 		// If it is, return the score from the current players perspective. 
 			
 		// If the game is not over, iterate over all the possible moves available to the current player 
@@ -28,52 +28,34 @@ $(document).ready(function(){
 					rowC:[],
 				},
 				gridState:[],
-				player:"",
+				player: "O",
+				computer:"X",
 
-				min: function(){
-
-				},
-				max: function(){
-					//Find all possible moves on the Board. 
-
-				},
 				findPossibleMoves: function(){
 					var pMoves = [];
 					$('.grid').each(function(){
-
 						pMoves.push
 					});
 					
 				},
-				makeMove: function(){
-					if(gridState[i]=="_"){
-						gridState[i]=player;
+				makeMove: function(gamestate, move, player){
+					var newState = this.copyState(gamestate);
+					console.log(newState);
+					console.log(newState[move]);
+					if(newState[move]=="_"){
+						newState[move]=player;
+						return newState;
+					} else {
+						return null;
 					}
 				},
-				boardStates: function(player, board){
-					var board = [];
-					var gameEnd =false;
-					$('.grid').each(function(){
-						
-						if($(this).hasClass('A')){
-							console.log("has playerA");
-							board.push("O");
-						} else if($(this).hasClass('B')){
-							console.log("has playerB");
-							board.push('X');
-						} else{
-							console.log("has no player");
-							board.push('_');
-						}
-					});
-					gridState = board;
-					var tileC=0;
-					for(var i=0;i<board.length;i++){
-						if(board[i] == "_"){
-							tileC++;
-						}
-					}
-					var player = "O";
+				copyState: function(gamestate){
+					var newGameState = gamestate;
+					return newGameState;
+				},
+				checkWin: function(player, gamestate){
+					var board = gamestate;
+					console.log("It is now " + player + "'s turn");
 					 if((board[0]===player&&board[1]===player&&board[2]===player)||
 						(board[3]===player&&board[4]===player&&board[5]===player)||
 						(board[6]===player&&board[7]===player&&board[8]===player)|| 
@@ -83,17 +65,118 @@ $(document).ready(function(){
 						(board[0]===player&&board[4]===player&&board[8]===player)||
 						(board[2]===player&&board[4]===player&&board[6]===player)
 						){
-					 	player = this.player;
-					 	gameEnd = true;
+					 		console.log("This is a win");
+					 		player = this.player;
+					 		gameEnd = true;
+					 		return gameEnd;
 					 }
-					 else if(tileC == board.length){
-					 	gameEnd = true;
-					 }else{
+					else{
 					 	gameEnd = false;
 					 }
 					 return gameEnd;
 					// console.log(gridState);
 				},
+				checkDraw: function(gamestate){
+					console.log(gamestate);
+					if(gamestate.indexOf("_") === -1){
+						return true;
+					}else{
+						return false;
+					}
+				},
+				convertGrid: function(){
+					var board = [];
+						$('.grid').each(function(){
+							
+							if($(this).hasClass('A')){
+								console.log("has playerA");
+								board.push("O");
+							} else if($(this).hasClass('B')){
+								console.log("has playerB");
+								board.push('X');
+							} else{
+								console.log("has no player");
+								board.push('_');
+							}
+						});
+					console.log(board);
+					return board;
+				},
+				miniMax: function(){
+					var gamestate = this.convertGrid();
+					console.log(gamestate);
+					var bestMVal = -5;
+					var move = 0;
+					for(var i=0; i < gamestate.length; i++){
+						//for every empty cell in this state, make a move; 
+						var newState = this.makeMove(gamestate,i,this.computer);
+						console.log(newState);
+
+						if(newState){
+							var pMVal = this.minV(newState);
+							if(pMVal > bestMVal){
+								bestMVal = pMVal;
+								move = i;
+							}
+						}
+					}
+					return move;
+				},
+				minV: function(gamestate){
+					if(this.checkWin(this.computer, gamestate)){
+						return 1;
+					}
+					else if(this.checkWin(this.player, gamestate)){
+						return -1;
+					}
+					else if(this.checkDraw(gamestate)){
+						return 0;
+					} else {
+						var bMVal = 5;
+						var move = 0;
+						for(var i=0; i<gamestate.length;i++){
+							var newState = this.makeMove(gamestate,i,this.player);
+
+							if(newState){
+								var pMVal = this.maxV(newState);
+								if(pMVal < bMVal){
+									bMVal = pMVal;
+									move = i;
+									console.log("The minValue of this move is: " + bMVal);
+								}
+							}
+						}
+						return bMVal;
+					}
+				},
+				maxV: function(gamestate){
+					if(this.checkWin(this.computer, gamestate)){
+						return 1;
+					} 
+					else if(this.checkWin(this.player,gamestate)){
+						return -1;
+					} 
+					else if(this.checkDraw(gamestate)){
+						return 0;
+					}
+					else {
+						var bMVal=-5;
+						var move=0;
+						for(var i =0; i < gamestate.length; i++){
+							var newState = this.makeMove(gamestate,i,this.computer);
+							if(newState){
+								var pMVal = this.minV(newState);
+								if(pMVal > bMVal){
+									bMVal = pMVal;
+									console.log("The maxValue of this move is: "+bMVal)
+									move = i
+								}
+							}
+						}
+						return bMVal;
+					}
+
+				}
 		};	
 	var tictactoe = {
 		moveCounter: 2,
@@ -109,13 +192,7 @@ $(document).ready(function(){
 			var counterG = 0;
 			var tcubedCanvas = $('body').append('<div id="tcubed"></div><div class="counter"></div>');
 			$('.counter').append('<ul><li class="pAcount"></li><li class="pBcount"></li></ul>');
-			$('.pAcount').text("Player A: " + this.playerAcount);
-			if(this.mode === "computer"){
-				$('.pBcount').text("Computer: " + this.playerBcount);
-			}else{
-				$('.pBcount').text("Player B: " + this.playerBcount);
-			}
-			
+
 			for(var i = 0; i < this.gridSize; i++){
 				$('#tcubed').append('<div></div>')
 				var $grid = $('#tcubed').find('div');
@@ -126,7 +203,15 @@ $(document).ready(function(){
 				counterG++;
 				$(this).attr('id',"g" + counterG);
 				tictactoe.gridArray.push(this);	
-			})
+			});
+			$('.pAcount').text("Player A: " + this.playerAcount);
+			if(this.mode === "computer"){
+				$('.pBcount').text("Computer: " + this.playerBcount);
+				$('.grid').addClass("hal9000");
+			}else{
+				$('.pBcount').text("Player B: " + this.playerBcount);
+			}
+			
 		},
 		gameState: function(){
 		},
@@ -140,7 +225,8 @@ $(document).ready(function(){
 		computer: function(){
 			var $grids= $('#tcubed').find('.grid');
 			var availableTiles =[];
-			var move;
+			var move; 
+			var sMove = miniMax.miniMax(this.gridArray);
 			$grids.each(function(){
 				if(!$(this).hasClass('occupied')){
 					availableTiles.push(this);
@@ -148,8 +234,9 @@ $(document).ready(function(){
 				}
 			});
 			move = availableTiles[Math.floor(Math.random()*availableTiles.length)];
-			console.log(move);
+			console.log("The best Move is " + sMove);
 			$move = "#" + move.id;
+			console.log($move);
 			$($move).addClass('hal').addClass("occupied").data('gridValue',4);
 			tictactoe.moveCounter++;
 			tictactoe.makeMove();
@@ -160,6 +247,7 @@ $(document).ready(function(){
 				newGameState.push(this);
 			});
 			tictactoe.gridArray = newGameState;
+			console.log(newGameState);
 		},
 		playerA: function (){
 			$('.grid').addClass("potentialA").removeClass('potentialB');
@@ -203,10 +291,13 @@ $(document).ready(function(){
 				console.log("endgame");
 				$('body').append('<div class="message-container"></div>');
 				$('.message-container').append("<div class='message-box'></div>");
-				$('.message-box').append('<p class="message"></p><button class="resetbutt">Play another</button>');
+				$('.message-box').append('<p class="message"></p><button class="player">vs player</button><button class="computer">vs CPU</button>');
 				$('.message').text(this.message);
-				$('.resetbutt').on('click',function(){
-					tictactoe.resetBoard();
+				$('.player').on('click',function(){
+					tictactoe.resetBoard("player");
+				});
+				$('.computer').on('click',function(){
+					tictactoe.resetBoard('computer');
 				});
 				return;
 			}
@@ -238,7 +329,8 @@ $(document).ready(function(){
 				}	
 		},
 
-		resetBoard: function (){
+		resetBoard: function (str){
+			this.mode = str;
 			this.gameEnd = false;
 			tictactoe.playGame(this.mode);
 		},
@@ -248,7 +340,7 @@ $(document).ready(function(){
 			var	playerAwin = "player A has won";
 			var	playerBwin = "player B has won";
 			var computerWin = "The computer has won";
-			if(this.mode==="computer"){
+			if(this.mode === "computer"){
 				playerBwin = computerWin;
 			}
 			
@@ -358,5 +450,4 @@ $(document).ready(function(){
 		}
 	}
 
-	miniMax.boardStates();
 });

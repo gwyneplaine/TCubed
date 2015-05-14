@@ -1,11 +1,12 @@
 body{
 	background: #2c2c2c;
 }
+
 #tcubed{
 	width: 600px;
 	height: 600px;
 	margin:50px auto;
-	/*background: #2c2c2c;*/
+	background: none;
 }
 .potentialA:hover{
 	background: #ffdddd;
@@ -15,10 +16,11 @@ body{
 }
 
 .grid{
+	transition: all 1s;
 	box-sizing: border-box;
 	width: 200px;
 	height:200px;
-	border: 1px solid #fff;
+/*	border: 1px solid #aaa;*/
 	float:left;
 	display:inline-block;
 	font-size:24px;
@@ -26,14 +28,20 @@ body{
 	text-align:center;
 }
 .A{
+	transition: all 1s;
 	background:#e50007;
+	border: 1px solid #fff;
 }
 .B{
+	transition: all 1s;
 	background:#0007e5;
+	border: 1px solid #fff;
 }
 .hal{
+	transition: all 1s;
 	background: url(../images/hal.png);
 	background-size:cover;	
+	border: 1px solid #e50007;
 }
 .message-container{
 	position: absolute;
@@ -44,8 +52,8 @@ body{
 	background: rgba(0,0,0,.8);
 }
 .message-box{
-	width: 200px;
-	height: 100px;
+	width: 500px;
+	height: auto;
 	margin: 0 auto;
 	padding:25px;
 	margin-top: 250px;
@@ -72,6 +80,8 @@ ul li a{
 }
 button, .btn{
 	cursor:pointer;
+	display:inline-block;
+	margin: 12px 8px;
 	padding:12px 8px;
 	font-size:24px;
 	border:0;
@@ -91,4 +101,8 @@ button:hover, .btn:hover{
 	text-align:center;
 	max-width:900px;
 	color: #fff;
+}
+.hal9000{
+	transition: all  1s;
+	border: 1px solid #e50007;
 }
