@@ -7,6 +7,13 @@ body{
 	margin:50px auto;
 	/*background: #2c2c2c;*/
 }
+.potentialA:hover{
+	background: #ffdddd;
+}
+.potentialB:hover{
+	background: #ddddff;
+}
+
 .grid{
 	box-sizing: border-box;
 	width: 200px;
@@ -23,6 +30,10 @@ body{
 }
 .B{
 	background:#0007e5;
+}
+.hal{
+	background: url(../images/hal.png);
+	background-size:cover;	
 }
 .message-container{
 	position: absolute;
@@ -41,7 +52,25 @@ body{
 	background: rgba( 255,255,255,.8);
 	text-align:center;
 }
-button{
+.start{
+	margin:0 auto;
+	max-width: 900px;
+	padding:25px;
+	text-align:center;
+}
+ul{
+	list-style:none;
+	padding-left: 0px;
+}
+ul li{
+	display:inline-block;
+	margin: 12px;
+
+}
+ul li a{
+	text-decoration:none;
+}
+button, .btn{
 	cursor:pointer;
 	padding:12px 8px;
 	font-size:24px;
@@ -53,7 +82,13 @@ button{
 	color:#fff;
 	background: #e50007;
 }
-button:hover{
+button:hover, .btn:hover{
 	background: #fff;
 	color:#2c2c2c;
+}
+.counter{
+	margin:0 auto;
+	text-align:center;
+	max-width:900px;
+	color: #fff;
 }
