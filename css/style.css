@@ -1,6 +1,13 @@
 body{
 	background: #2c2c2c;
 }
+.HALLines{
+	text-align:center;
+	color: #e50007;
+	font-size: 24px;
+	text-transform: uppercase;
+	font-family: sans-serif;
+}
 
 #tcubed{
 	width: 600px;
