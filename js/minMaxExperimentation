@@ -1,0 +1,171 @@
+	// var miniMax= {
+	// 	// Check if the game is over 
+	// 	// If it is, return the score from the current players perspective. 
+			
+	// 	// If the game is not over, iterate over all the possible moves available to the current player 
+	// 	// and push them into an array. 
+
+	// 	// If the move creates an end state, add a positive score to the scores array. 
+	// 	// If the move doesn't create an end state, 
+	// 	// iterate over all the remaining possible moves 
+	// 	// available to the current player
+
+	// 	// Keep doing this until there are no more possible moves. 
+
+	// 	// Return all choices that result in a positive number.
+	// 			boardState: {
+	// 				rowA:[],
+	// 				rowB:[],
+	// 				rowC:[],
+	// 			},
+	// 			gridState:[],
+	// 			player: "O",
+	// 			computer:"X",
+
+	// 			findPossibleMoves: function(){
+	// 				var pMoves = [];
+	// 				$('.grid').each(function(){
+	// 					pMoves.push
+	// 				});
+					
+	// 			},
+	// 			makeMove: function(gamestate, move, player){
+	// 				var newState = this.copyState(gamestate);
+	// 				console.log(newState);
+	// 				console.log(newState[move]);
+	// 				if(newState[move]=="_"){
+	// 					newState[move]=player;
+	// 					return newState;
+	// 				} else {
+	// 					return null;
+	// 				}
+	// 			},
+	// 			copyState: function(gamestate){
+	// 				var newGameState = gamestate;
+	// 				return newGameState;
+	// 			},
+	// 			checkWin: function(player, gamestate){
+	// 				var board = gamestate;
+	// 				console.log("It is now " + player + "'s turn");
+	// 				 if((board[0]===player&&board[1]===player&&board[2]===player)||
+	// 					(board[3]===player&&board[4]===player&&board[5]===player)||
+	// 					(board[6]===player&&board[7]===player&&board[8]===player)|| 
+	// 					(board[0]===player&&board[3]===player&&board[6]===player)||
+	// 					(board[1]===player&&board[4]===player&&board[7]===player)||
+	// 					(board[2]===player&&board[5]===player&&board[8]===player)||
+	// 					(board[0]===player&&board[4]===player&&board[8]===player)||
+	// 					(board[2]===player&&board[4]===player&&board[6]===player)
+	// 					){
+	// 				 		console.log("This is a win");
+	// 				 		player = this.player;
+	// 				 		gameEnd = true;
+	// 				 		return gameEnd;
+	// 				 }
+	// 				else{
+	// 				 	gameEnd = false;
+	// 				 }
+	// 				 return gameEnd;
+	// 				// console.log(gridState);
+	// 			},
+	// 			checkDraw: function(gamestate){
+	// 				console.log(gamestate);
+	// 				if(gamestate.indexOf("_") === -1){
+	// 					return true;
+	// 				}else{
+	// 					return false;
+	// 				}
+	// 			},
+	// 			convertGrid: function(){
+	// 				var board = [];
+	// 					$('.grid').each(function(){
+							
+	// 						if($(this).hasClass('A')){
+	// 							console.log("has playerA");
+	// 							board.push("O");
+	// 						} else if($(this).hasClass('B')){
+	// 							console.log("has playerB");
+	// 							board.push('X');
+	// 						} else{
+	// 							console.log("has no player");
+	// 							board.push('_');
+	// 						}
+	// 					});
+	// 				console.log(board);
+	// 				return board;
+	// 			},
+	// 			miniMax: function(){
+	// 				var gamestate = this.convertGrid();
+	// 				console.log(gamestate);
+	// 				var bestMVal = -5;
+	// 				var move = 0;
+	// 				for(var i=0; i < gamestate.length; i++){
+	// 					//for every empty cell in this state, make a move; 
+	// 					var newState = this.makeMove(gamestate,i,this.computer);
+	// 					console.log(newState);
+
+	// 					if(newState){
+	// 						var pMVal = this.minV(newState);
+	// 						if(pMVal > bestMVal){
+	// 							bestMVal = pMVal;
+	// 							move = i;
+	// 						}
+	// 					}
+	// 				}
+	// 				return move;
+	// 			},
+	// 			minV: function(gamestate){
+	// 				if(this.checkWin(this.computer, gamestate)){
+	// 					return 1;
+	// 				}
+	// 				else if(this.checkWin(this.player, gamestate)){
+	// 					return -1;
+	// 				}
+	// 				else if(this.checkDraw(gamestate)){
+	// 					return 0;
+	// 				} else {
+	// 					var bMVal = 5;
+	// 					var move = 0;
+	// 					for(var i=0; i<gamestate.length;i++){
+	// 						var newState = this.makeMove(gamestate,i,this.player);
+
+	// 						if(newState){
+	// 							var pMVal = this.maxV(newState);
+	// 							if(pMVal < bMVal){
+	// 								bMVal = pMVal;
+	// 								move = i;
+	// 								console.log("The minValue of this move is: " + bMVal);
+	// 							}
+	// 						}
+	// 					}
+	// 					return bMVal;
+	// 				}
+	// 			},
+	// 			maxV: function(gamestate){
+	// 				if(this.checkWin(this.computer, gamestate)){
+	// 					return 1;
+	// 				} 
+	// 				else if(this.checkWin(this.player,gamestate)){
+	// 					return -1;
+	// 				} 
+	// 				else if(this.checkDraw(gamestate)){
+	// 					return 0;
+	// 				}
+	// 				else {
+	// 					var bMVal=-5;
+	// 					var move=0;
+	// 					for(var i =0; i < gamestate.length; i++){
+	// 						var newState = this.makeMove(gamestate,i,this.computer);
+	// 						if(newState){
+	// 							var pMVal = this.minV(newState);
+	// 							if(pMVal > bMVal){
+	// 								bMVal = pMVal;
+	// 								console.log("The maxValue of this move is: "+bMVal)
+	// 								move = i
+	// 							}
+	// 						}
+	// 					}
+	// 					return bMVal;
+	// 				}
+
+	// 			}
+	// 	};	
